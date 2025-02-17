@@ -1,146 +1,158 @@
-import { HttpTypes } from "@medusajs/types"
+import { HttpTypes } from "@medusajs/types";
 import {
   ColumnDef,
   ColumnDefBase,
   createColumnHelper,
-} from "@tanstack/react-table"
-import { useMemo } from "react"
+} from "@tanstack/react-table";
+import { useMemo } from "react";
 import {
   DateCell,
   DateHeader,
-} from "../../../components/table/table-cells/common/date-cell"
-import { CountryCell } from "../../../components/table/table-cells/order/country-cell"
+} from "../../../components/table/table-cells/common/date-cell";
+import { CountryCell } from "../../../components/table/table-cells/order/country-cell";
 import {
   CustomerCell,
   CustomerHeader,
-} from "../../../components/table/table-cells/order/customer-cell"
+} from "../../../components/table/table-cells/order/customer-cell";
 import {
   DisplayIdCell,
   DisplayIdHeader,
-} from "../../../components/table/table-cells/order/display-id-cell"
+} from "../../../components/table/table-cells/order/display-id-cell";
 import {
   FulfillmentStatusCell,
   FulfillmentStatusHeader,
-} from "../../../components/table/table-cells/order/fulfillment-status-cell"
+} from "../../../components/table/table-cells/order/fulfillment-status-cell";
 import {
   PaymentStatusCell,
   PaymentStatusHeader,
-} from "../../../components/table/table-cells/order/payment-status-cell"
+} from "../../../components/table/table-cells/order/payment-status-cell";
 import {
   SalesChannelCell,
   SalesChannelHeader,
-} from "../../../components/table/table-cells/order/sales-channel-cell"
+} from "../../../components/table/table-cells/order/sales-channel-cell";
 import {
   TotalCell,
   TotalHeader,
-} from "../../../components/table/table-cells/order/total-cell"
+} from "../../../components/table/table-cells/order/total-cell";
+import {
+  OrderStatusCell,
+  OrderStatusHeader,
+} from "../../../components/table/table-cells/order/order-status";
 
 // We have to use any here, as the type of Order is so complex that it lags the TS server
-const columnHelper = createColumnHelper<HttpTypes.AdminOrder>()
+const columnHelper = createColumnHelper<HttpTypes.AdminOrder>();
 
 type UseOrderTableColumnsProps = {
-  exclude?: string[]
-}
+  exclude?: string[];
+};
 
 export const useOrderTableColumns = (props: UseOrderTableColumnsProps) => {
-  const { exclude = [] } = props ?? {}
+  const { exclude = [] } = props ?? {};
 
   const columns = useMemo(
     () => [
       columnHelper.accessor("display_id", {
         header: () => <DisplayIdHeader />,
         cell: ({ getValue }) => {
-          const id = getValue()
+          const id = getValue();
 
-          return <DisplayIdCell displayId={id!} />
+          return <DisplayIdCell displayId={id!} />;
         },
       }),
       columnHelper.accessor("created_at", {
         header: () => <DateHeader />,
         cell: ({ getValue }) => {
-          const date = new Date(getValue())
+          const date = new Date(getValue());
 
-          return <DateCell date={date} />
+          return <DateCell date={date} />;
         },
       }),
       columnHelper.accessor("customer", {
         header: () => <CustomerHeader />,
         cell: ({ getValue }) => {
-          const customer = getValue()
+          const customer = getValue();
 
-          return <CustomerCell customer={customer} />
+          return <CustomerCell customer={customer} />;
         },
       }),
       columnHelper.accessor("sales_channel", {
         header: () => <SalesChannelHeader />,
         cell: ({ getValue }) => {
-          const channel = getValue()
+          const channel = getValue();
 
-          return <SalesChannelCell channel={channel} />
+          return <SalesChannelCell channel={channel} />;
         },
       }),
-      columnHelper.accessor("payment_status", {
-        header: () => <PaymentStatusHeader />,
+      columnHelper.accessor("status", {
+        header: () => <OrderStatusHeader />,
         cell: ({ getValue }) => {
-          const status = getValue()
+          const status = getValue();
 
-          return <PaymentStatusCell status={status} />
+          return <OrderStatusCell status={status} />;
         },
       }),
-      columnHelper.accessor("fulfillment_status", {
-        header: () => <FulfillmentStatusHeader />,
-        cell: ({ getValue }) => {
-          const status = getValue()
+      // columnHelper.accessor("payment_status", {
+      //   header: () => <PaymentStatusHeader />,
+      //   cell: ({ getValue }) => {
+      //     const status = getValue();
 
-          return <FulfillmentStatusCell status={status} />
-        },
-      }),
+      //     return <PaymentStatusCell status={status} />;
+      //   },
+      // }),
+      // columnHelper.accessor("fulfillment_status", {
+      //   header: () => <FulfillmentStatusHeader />,
+      //   cell: ({ getValue }) => {
+      //     const status = getValue();
+
+      //     return <FulfillmentStatusCell status={status} />;
+      //   },
+      // }),
       columnHelper.accessor("total", {
         header: () => <TotalHeader />,
         cell: ({ getValue, row }) => {
-          const total = getValue()
-          const currencyCode = row.original.currency_code
+          const total = getValue();
+          const currencyCode = row.original.currency_code;
 
-          return <TotalCell currencyCode={currencyCode} total={total} />
+          return <TotalCell currencyCode={currencyCode} total={total} />;
         },
       }),
       columnHelper.display({
         id: "actions",
         cell: ({ row }) => {
-          const country = row.original.shipping_address?.country
+          const country = row.original.shipping_address?.country;
 
-          return <CountryCell country={country} />
+          return <CountryCell country={country} />;
         },
       }),
     ],
     []
-  )
+  );
 
   const isAccessorColumnDef = (
     c: any
   ): c is ColumnDef<HttpTypes.AdminOrder> & { accessorKey: string } => {
-    return c.accessorKey !== undefined
-  }
+    return c.accessorKey !== undefined;
+  };
 
   const isDisplayColumnDef = (
     c: any
   ): c is ColumnDef<HttpTypes.AdminOrder> & { id: string } => {
-    return c.id !== undefined
-  }
+    return c.id !== undefined;
+  };
 
   const shouldExclude = <TDef extends ColumnDefBase<HttpTypes.AdminOrder, any>>(
     c: TDef
   ) => {
     if (isAccessorColumnDef(c)) {
-      return exclude.includes(c.accessorKey)
+      return exclude.includes(c.accessorKey);
     } else if (isDisplayColumnDef(c)) {
-      return exclude.includes(c.id)
+      return exclude.includes(c.id);
     }
 
-    return false
-  }
+    return false;
+  };
 
   return columns.filter(
     (c) => !shouldExclude(c)
-  ) as ColumnDef<HttpTypes.AdminOrder>[]
-}
+  ) as ColumnDef<HttpTypes.AdminOrder>[];
+};

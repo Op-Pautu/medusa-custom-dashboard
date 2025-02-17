@@ -1,14 +1,14 @@
-import { z } from "zod"
-import { i18n } from "../../../components/utilities/i18n/i18n.tsx"
-import { optionalFloat, optionalInt } from "../../../lib/validation.ts"
-import { decorateVariantsWithDefaultValues } from "./utils.ts"
+import { z } from "zod";
+import { i18n } from "../../../components/utilities/i18n/i18n.tsx";
+import { optionalFloat, optionalInt } from "../../../lib/validation.ts";
+import { decorateVariantsWithDefaultValues } from "./utils.ts";
 
 export const MediaSchema = z.object({
   id: z.string().optional(),
   url: z.string(),
   isThumbnail: z.boolean(),
   file: z.any().nullable(), // File
-})
+});
 
 const ProductCreateVariantSchema = z.object({
   should_create: z.boolean(),
@@ -40,20 +40,20 @@ const ProductCreateVariantSchema = z.object({
       })
     )
     .optional(),
-})
+});
 
 export type ProductCreateVariantSchema = z.infer<
   typeof ProductCreateVariantSchema
->
+>;
 
 const ProductCreateOptionSchema = z.object({
   title: z.string(),
   values: z.array(z.string()).min(1),
-})
+});
 
 export type ProductCreateOptionSchema = z.infer<
   typeof ProductCreateOptionSchema
->
+>;
 
 export const ProductCreateSchema = z
   .object({
@@ -64,7 +64,8 @@ export const ProductCreateSchema = z
     discountable: z.boolean(),
     type_id: z.string().optional(),
     collection_id: z.string().optional(),
-    shipping_profile_id: z.string(), // TODO: require min(1) when partial validation per tab is added
+    // shipping_profile_id: z.string().optional(),
+    // TODO: require min(1) when partial validation per tab is added
     categories: z.array(z.string()),
     tags: z.array(z.string()).optional(),
     sales_channels: z
@@ -94,10 +95,10 @@ export const ProductCreateSchema = z
         code: z.ZodIssueCode.custom,
         path: ["variants"],
         message: "invalid_length",
-      })
+      });
     }
 
-    const skus = new Set<string>()
+    const skus = new Set<string>();
 
     data.variants.forEach((v, index) => {
       if (v.sku) {
@@ -106,17 +107,17 @@ export const ProductCreateSchema = z
             code: z.ZodIssueCode.custom,
             path: [`variants.${index}.sku`],
             message: i18n.t("products.create.errors.uniqueSku"),
-          })
+          });
         }
 
-        skus.add(v.sku)
+        skus.add(v.sku);
       }
-    })
-  })
+    });
+  });
 
 export const EditProductMediaSchema = z.object({
   media: z.array(MediaSchema),
-})
+});
 
 export const PRODUCT_CREATE_FORM_DEFAULTS: Partial<
   z.infer<typeof ProductCreateSchema>
@@ -146,7 +147,7 @@ export const PRODUCT_CREATE_FORM_DEFAULTS: Partial<
   media: [],
   categories: [],
   collection_id: "",
-  shipping_profile_id: "",
+  // shipping_profile_id: "",
   description: "",
   handle: "",
   height: "",
@@ -160,4 +161,4 @@ export const PRODUCT_CREATE_FORM_DEFAULTS: Partial<
   type_id: "",
   weight: "",
   width: "",
-}
+};

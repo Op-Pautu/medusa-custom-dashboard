@@ -1,15 +1,15 @@
-import { TFunction } from "i18next"
+import { TFunction } from "i18next";
 
 export const getCanceledOrderStatus = (
   t: TFunction<"translation">,
   status: string
 ): { label: string; color: "red" } | null => {
   if (status === "canceled") {
-    return { label: t("orders.status.canceled"), color: "red" }
+    return { label: t("orders.status.canceled"), color: "red" };
   }
 
-  return null
-}
+  return null;
+};
 
 export const getOrderPaymentStatus = (
   t: TFunction<"translation">,
@@ -35,10 +35,10 @@ export const getOrderPaymentStatus = (
     ],
     canceled: [t("orders.payment.status.canceled"), "red"],
     requires_action: [t("orders.payment.status.requiresAction"), "orange"],
-  }[status] as [string, "red" | "orange" | "green"]
+  }[status] as [string, "red" | "orange" | "green"];
 
-  return { label, color }
-}
+  return { label, color };
+};
 
 export const getOrderFulfillmentStatus = (
   t: TFunction<"translation">,
@@ -68,7 +68,18 @@ export const getOrderFulfillmentStatus = (
     returned: [t("orders.fulfillment.status.returned"), "green"],
     canceled: [t("orders.fulfillment.status.canceled"), "red"],
     requires_action: [t("orders.fulfillment.status.requiresAction"), "orange"],
-  }[status] as [string, "red" | "orange" | "green"]
+  }[status] as [string, "red" | "orange" | "green"];
 
-  return { label, color }
-}
+  return { label, color };
+};
+
+export const getOrderStatus = (t: TFunction<"translation">, status: string) => {
+  const [label, color] = {
+    pending: [t("orders.status.pending"), "orange"],
+    completed: [t("orders.status.completed"), "green"],
+    canceled: [t("orders.status.canceled"), "red"],
+    requires_action: [t("orders.status.requiresction"), "orange"],
+  }[status] as [string, "red" | "orange" | "green"];
+
+  return { label, color };
+};

@@ -7,7 +7,7 @@ export const useSignInWithEmailPass = (
   options?: UseMutationOptions<
     | string
     | {
-        location: string
+        location: string;
       },
     FetchError,
     HttpTypes.AdminSignUpWithEmailPassword
@@ -16,11 +16,11 @@ export const useSignInWithEmailPass = (
   return useMutation({
     mutationFn: (payload) => sdk.auth.login("user", "emailpass", payload),
     onSuccess: async (data, variables, context) => {
-      options?.onSuccess?.(data, variables, context)
+      options?.onSuccess?.(data, variables, context);
     },
     ...options,
-  })
-}
+  });
+};
 
 export const useSignUpWithEmailPass = (
   options?: UseMutationOptions<
